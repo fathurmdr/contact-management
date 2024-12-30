@@ -1,0 +1,84 @@
+"@startuml ERD"
+
+entity "users" {
+	+id: int (pkey)
+	--
+	+name: string
+	+email: string unique
+	+phone_number: string unique
+	+phone_number: string
+	+bio: string?
+	+created_at: int
+	+updated_at: int
+}
+
+entity "sessions" {
+	+id: uuid (pkey)
+	--
+  +user_id: int (fkey)
+	--
+	+expires_at: int
+	+created_at: int
+	+updated_at: int
+}
+
+entity "contacts" {
+	+id: int (pkey)
+	--
+	+user_id: int (fkey)
+	--
+	+full_name: string
+	+nick_name: string?
+	+phone_number: string
+	+email: string?
+	+created_at: int
+	+updated_at: int
+}
+
+entity "addresses" {
+	+id: int (pkey)
+	--
+	+contact_id: int (fkey)
+	--
+	+street: string
+	+city: string?
+	+district: string?
+	+sub_district: string?
+	+postal_code: string?
+	+created_at: int
+	+updated_at: int
+}
+
+entity "groups" {
+	+id: int (pkey)
+	--
+	+user_id: int (fkey)
+	--
+	+name: string
+  +description: stiring?
+	+created_at: int
+	+updated_at: int
+}
+
+entity "group_members" {
+	+id: int (pkey)
+	--
+	+group_id: int (fkey)
+	+contact_id: int (fkey)
+	--
+	+created_at: int
+	+updated_at: int
+	--
+  +unique(group_id, contact_id)
+}
+
+
+
+users ||--o{ sessions
+users ||--o{ contacts
+users ||--o{ groups
+contacts ||--o{ addresses
+contacts ||--o{ group_members
+groups ||--o{ group_members
+
+@enduml
