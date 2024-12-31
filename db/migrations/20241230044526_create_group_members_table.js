@@ -11,8 +11,6 @@ exports.up = function (knex) {
       .notNullable()
       .references("id")
       .inTable("contacts");
-    table.integer("created_at").notNullable();
-    table.integer("updated_at").notNullable();
 
     table.unique(["group_id", "contact_id"]);
   });
