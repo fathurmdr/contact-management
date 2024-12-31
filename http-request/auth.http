@@ -1,0 +1,24 @@
+@baseUrl=http://localhost:3000
+
+### register
+POST {{baseUrl}}/auth/register
+Content-Type: "application/json"
+Accept: "application/json"
+
+{
+  "name": "Jhon Doe",
+  "email": "jhon.doe@email.com",
+  "phoneNumber": "+62-81234566789",
+  "bio": "Software Developer",
+  "password": "hello_world123"
+}
+
+### login
+POST {{baseUrl}}/auth/login
+Content-Type: "application/json"
+Accept: "application/json"
+
+{
+  "emailOrPhoneNumber": "+62-81234566789",
+  "password": "hello_world123"
+}

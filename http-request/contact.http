@@ -1,0 +1,80 @@
+@baseUrl=http://localhost:3000
+@sessionId=2e79add4-de87-4b3b-8962-899d23c00246
+
+### Get contacts
+GET {{baseUrl}}/contact
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+
+### add contact
+POST {{baseUrl}}/contact
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+  "fullName": "William Johnson",
+  "nickName": "Will",
+  "phoneNumber": "+62-81234566789",
+  "email": "william.jhonson@email.com",
+  "addresses": [
+    {
+      "street": "123 Maple Street",
+      "city": "Springfield",
+      "district": "Central District",
+      "subDistrict": "Downtown",
+      "postalCode": "12345"
+    },
+    {
+      "street": "456 Oak Avenue",
+      "city": "Riverside",
+      "district": "East District",
+      "subDistrict": "Lakeside",
+      "postalCode": "67890"
+    }
+  ]
+}
+
+### Get contact by id
+GET {{baseUrl}}/contact/1
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+### Update contact by id
+PUT {{baseUrl}}/contact/1
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+    "fullName": "Alexander Brown",
+    "nickName": "Xander",
+    "phoneNumber": "+62-81234566789",
+    "email": "xander.brown@email.com",
+    "addresses": [
+      {
+        "street": "123 Maple Street",
+        "city": "Springfield",
+        "district": "Central District",
+        "subDistrict": "Downtown",
+        "postalCode": "12345"
+      },
+      {
+        "street": "456 Oak Avenue",
+        "city": "Riverside",
+        "district": "East District",
+        "subDistrict": "Lakeside",
+        "postalCode": "67890"
+      }
+    ]
+}
+
+
+### Delete contact by id
+DELETE {{baseUrl}}/contact/1
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}

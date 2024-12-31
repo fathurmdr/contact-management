@@ -1,0 +1,64 @@
+@baseUrl=http://localhost:3000
+@sessionId=2e79add4-de87-4b3b-8962-899d23c00246
+
+### Get groups
+GET {{baseUrl}}/group
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+
+### add group
+POST {{baseUrl}}/group
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+  "name": "Work",
+  "description": "these are my friends at work"
+}
+
+### Get group by id
+GET {{baseUrl}}/group/2
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+### Update group by id
+PUT {{baseUrl}}/group/1
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+  "name": "School",
+  "description": "these are my friends at school"
+}
+
+
+### Delete group by id
+DELETE {{baseUrl}}/group/1
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+### add group member
+POST {{baseUrl}}/group/2/member
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+  "contactId": 1
+}
+
+### Delete group member
+DELETE {{baseUrl}}/group/2/member
+Content-Type: application/json
+Accept: application/json
+X-Session-Id: {{sessionId}}
+
+{
+  "contactId": 1
+}
