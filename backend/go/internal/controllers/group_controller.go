@@ -6,6 +6,7 @@ import (
 	"github.com/fathurmdr/backend/go/internal/dto"
 	"github.com/fathurmdr/backend/go/internal/models"
 	"github.com/fathurmdr/backend/go/internal/services"
+	"github.com/fathurmdr/backend/go/internal/utils"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
@@ -19,15 +20,7 @@ func (groupController *GroupController) GetGroups(ctx *fiber.Ctx) error {
 
 	groups, err := groupService.GetGroups(userData)
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -40,21 +33,16 @@ func (groupController *GroupController) GetGroup(ctx *fiber.Ctx) error {
 	userData := ctx.Locals("User").(models.User)
 
 	idParam := ctx.Params("id")
-	groupID,_ := strconv.ParseUint(idParam, 10, 32)
+	groupID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		panic(utils.NewValidationError("", err.Error()))
+	}
 
 	groupService := services.GroupService{}
 
 	group, err := groupService.GetGroup(userData, uint(groupID))
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -68,34 +56,20 @@ func (groupController *GroupController) AddGroup(ctx *fiber.Ctx) error {
 
 	groupRequest := new(dto.GroupRequest)
 	if err := ctx.BodyParser(groupRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Invalid request body",
-			"errors": err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	validate := validator.New() 
 
 	if err := validate.Struct(groupRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Validation Error",
-			"errors":   err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	groupService := services.GroupService{}
 
 	err := groupService.AddGroup(userData, groupRequest)
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
@@ -107,38 +81,27 @@ func (groupController *GroupController) UpdateGroup(ctx *fiber.Ctx) error {
 	userData := ctx.Locals("User").(models.User)
 	
 	idParam := ctx.Params("id")
-	groupID,_ := strconv.ParseUint(idParam, 10, 32)
+	groupID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		panic(utils.NewValidationError("", err.Error()))
+	}
 
 	groupRequest := new(dto.GroupRequest)
 	if err := ctx.BodyParser(groupRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Invalid request body",
-			"errors": err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	validate := validator.New() 
 
 	if err := validate.Struct(groupRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Validation Error",
-			"errors":   err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	groupService := services.GroupService{}
 
-	err := groupService.UpdateGroup(userData, uint(groupID), groupRequest)
+	err = groupService.UpdateGroup(userData, uint(groupID), groupRequest)
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -150,21 +113,16 @@ func (groupController *GroupController) DeleteGroup(ctx *fiber.Ctx) error {
 	userData := ctx.Locals("User").(models.User)
 
 	idParam := ctx.Params("id")
-	groupID,_ := strconv.ParseUint(idParam, 10, 32)
+	groupID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		panic(utils.NewValidationError("", err.Error()))
+	}
 
 	groupService := services.GroupService{}
 
-	err := groupService.DeleteGroup(userData, uint(groupID))
+	err = groupService.DeleteGroup(userData, uint(groupID))
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
@@ -176,38 +134,27 @@ func (groupController *GroupController) AddGroupMember(ctx *fiber.Ctx) error {
 	userData := ctx.Locals("User").(models.User)
 	
 	idParam := ctx.Params("id")
-	groupID,_ := strconv.ParseUint(idParam, 10, 32)
+	groupID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		panic(utils.NewValidationError("", err.Error()))
+	}
 
 	groupMemberRequest := new(dto.GroupMemberRequest)
 	if err := ctx.BodyParser(groupMemberRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Invalid request body",
-			"errors": err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	validate := validator.New() 
 
 	if err := validate.Struct(groupMemberRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Validation Errorr",
-			"errors":   err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	groupService := services.GroupService{}
 
-	err := groupService.AddGroupMember(userData, uint(groupID), groupMemberRequest)
+	err = groupService.AddGroupMember(userData, uint(groupID), groupMemberRequest)
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
@@ -219,38 +166,27 @@ func (groupController *GroupController) DeleteGroupMember(ctx *fiber.Ctx) error 
 	userData := ctx.Locals("User").(models.User)
 	
 	idParam := ctx.Params("id")
-	groupID,_ := strconv.ParseUint(idParam, 10, 32)
+	groupID, err := strconv.ParseUint(idParam, 10, 32)
+	if err != nil {
+		panic(utils.NewValidationError("", err.Error()))
+	}
 
 	groupMemberRequest := new(dto.GroupMemberRequest)
 	if err := ctx.BodyParser(groupMemberRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Invalid request body",
-			"errors": err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	validate := validator.New() 
 
 	if err := validate.Struct(groupMemberRequest); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Validation Error",
-			"errors":   err.Error(),
-		})
+		panic(utils.NewValidationError("", err.Error()))
 	}
 
 	groupService := services.GroupService{}
 
-	err := groupService.DeleteGroupMember(userData, uint(groupID), groupMemberRequest)
+	err = groupService.DeleteGroupMember(userData, uint(groupID), groupMemberRequest)
 	if err != nil {
-		if err.Errors != nil {
-			return ctx.Status(err.Status).JSON(fiber.Map{
-				"errorMsg": err.Message,
-				"errors": err.Errors,
-			})
-		}
-		return ctx.Status(err.Status).JSON(fiber.Map{
-			"errorMsg": err.Message,
-		})
+		panic(err)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{

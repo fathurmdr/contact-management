@@ -283,6 +283,8 @@ describe("POST /contact", () => {
       .send(contact);
 
     expect(res.status).toBe(400);
+    expect(res.body.errorMsg).toBe("Request Not Valid!");
+    expect(res.body.errors).toBeDefined();
   });
 });
 
@@ -390,6 +392,8 @@ describe("PUT /contact/:id", () => {
       .send(contact);
 
     expect(res.status).toBe(400);
+    expect(res.body.errorMsg).toBe("Request Not Valid!");
+    expect(res.body.errors).toBeDefined();
   });
 
   it("should fail to update non-existing contact", async () => {

@@ -25,7 +25,7 @@ export default async function errorMiddleware(
 
   if (error instanceof ZodError) {
     res.status(400).json({
-      errorMsg: "Validation error",
+      errorMsg: "Request Not Valid!",
       errors: error.issues,
     });
     return;

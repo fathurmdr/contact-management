@@ -3,15 +3,15 @@ package services
 import (
 	"github.com/fathurmdr/backend/go/internal/db"
 	"github.com/fathurmdr/backend/go/internal/dto"
-	"github.com/fathurmdr/backend/go/internal/errors"
 	"github.com/fathurmdr/backend/go/internal/models"
+	"github.com/fathurmdr/backend/go/internal/utils"
 	"gorm.io/gorm"
 )
 
 
 type ContactService struct{}
 
-func (contactService *ContactService) GetContacts(user models.User) (*[]dto.Contact, *errors.ResponseError) {
+func (contactService *ContactService) GetContacts(user models.User) (*[]dto.Contact, error) {
 	var contacts []models.Contact
 
 	err := db.DB.Model(&models.Contact{}).
@@ -23,7 +23,7 @@ func (contactService *ContactService) GetContacts(user models.User) (*[]dto.Cont
 			Find(&contacts).Error
 
 	if err != nil {
-			return nil,  errors.NewApplicationError("", nil)
+			return nil,  utils.NewApplicationError("", nil)
 	}
 
 	contactsResponse := make([]dto.Contact,0)
@@ -54,7 +54,7 @@ func (contactService *ContactService) GetContacts(user models.User) (*[]dto.Cont
 	return &contactsResponse, nil
 }
 
-func (contactService *ContactService) GetContact(user models.User, id uint) (*dto.Contact, *errors.ResponseError) {
+func (contactService *ContactService) GetContact(user models.User, id uint) (*dto.Contact, error) {
 
 	var contact models.Contact
 
@@ -65,7 +65,7 @@ func (contactService *ContactService) GetContact(user models.User, id uint) (*dt
 				Select("ID", "FullName", "NickName", "PhoneNumber", "Email").
 				Where("user_id = ?", user.ID).First(&contact).Error
 	if err != nil {
-		return nil, errors.NewNotFoundError("Contact not found", nil)
+		return nil, utils.NewNotFoundError("Contact not found", nil)
 	}
 
 
@@ -94,7 +94,7 @@ func (contactService *ContactService) GetContact(user models.User, id uint) (*dt
 	return &contactResponse, nil
 }
 
-func (contactService *ContactService) AddContact(user models.User, contactRequest *dto.Contact) (*errors.ResponseError) {
+func (contactService *ContactService) AddContact(user models.User, contactRequest *dto.Contact) (error) {
 	contact := models.Contact{
 		UserID:      user.ID,
 		FullName:    contactRequest.FullName,
@@ -116,17 +116,17 @@ func (contactService *ContactService) AddContact(user models.User, contactReques
 
 	err := db.DB.Create(&contact).Error
 	if err != nil {
-		return errors.NewApplicationError("", nil)
+		return utils.NewApplicationError("", nil)
 	}
 
 	return nil
 }
 
-func (contactService *ContactService) UpdateContact(user models.User, contactID uint, contactRequest *dto.Contact) (*errors.ResponseError) {
+func (contactService *ContactService) UpdateContact(user models.User, contactID uint, contactRequest *dto.Contact) (error) {
 	var contact models.Contact
 	err := db.DB.Where("id = ? AND user_id = ?", contactID, user.ID).First(&contact).Error
 	if err != nil {
-		return errors.NewNotFoundError("Contact not found", nil)
+		return utils.NewNotFoundError("Contact not found", nil)
 	}
 
 	contact.FullName = contactRequest.FullName
@@ -136,7 +136,7 @@ func (contactService *ContactService) UpdateContact(user models.User, contactID 
 
 	err = db.DB.Where("contact_id = ?", contact.ID).Delete(&models.Address{}).Error
 	if err != nil {
-		return errors.NewApplicationError("", nil)
+		return utils.NewApplicationError("", nil)
 	}
 
 	for _, address := range contactRequest.Addresses {
@@ -151,18 +151,18 @@ func (contactService *ContactService) UpdateContact(user models.User, contactID 
 
 	err = db.DB.Save(&contact).Error
 	if err != nil {
-		return errors.NewApplicationError("", nil)
+		return utils.NewApplicationError("", nil)
 	}
 
 	return nil
 }
 
-func (contactService *ContactService) DeleteContact(user models.User, contactID uint) (*errors.ResponseError) {
+func (contactService *ContactService) DeleteContact(user models.User, contactID uint) (error) {
 
 	var contact models.Contact
 	err := db.DB.Where("id = ? AND user_id = ?", contactID, user.ID).First(&contact).Error
 	if err != nil {
-		return errors.NewNotFoundError("Contact not found", nil)
+		return utils.NewNotFoundError("Contact not found", nil)
 	}
 
 	err = db.DB.Transaction(func(tx *gorm.DB) error {
@@ -186,7 +186,7 @@ func (contactService *ContactService) DeleteContact(user models.User, contactID 
 	})
 
 	if err != nil {
-		return errors.NewApplicationError("Failed to delete contact", nil)
+		return utils.NewApplicationError("Failed to delete contact", nil)
 	}
 
 	return nil

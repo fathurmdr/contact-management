@@ -9,6 +9,7 @@ import (
 	"github.com/fathurmdr/backend/go/internal/middlewares"
 	"github.com/fathurmdr/backend/go/internal/routes"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 func main() {
@@ -19,7 +20,11 @@ func main() {
 	db.Init()
 	defer db.Close()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: middlewares.ErrorMiddleware,
+	})
+
+	app.Use(recover.New())
 
 	app.Use(middlewares.SessionMiddleware)
 

@@ -3,15 +3,15 @@ package services
 import (
 	"github.com/fathurmdr/backend/go/internal/db"
 	"github.com/fathurmdr/backend/go/internal/dto"
-	"github.com/fathurmdr/backend/go/internal/errors"
 	"github.com/fathurmdr/backend/go/internal/models"
+	"github.com/fathurmdr/backend/go/internal/utils"
 	"gorm.io/gorm"
 )
 
 
 type GroupService struct{}
 
-func (groupService *GroupService) GetGroups(user models.User) (*[]dto.GroupWithMember, *errors.ResponseError) {
+func (groupService *GroupService) GetGroups(user models.User) (*[]dto.GroupWithMember, error) {
 	var groups []models.Group
 
 	err := db.DB.Model(&models.Group{}).
@@ -22,7 +22,7 @@ func (groupService *GroupService) GetGroups(user models.User) (*[]dto.GroupWithM
 			Find(&groups).Error
 
 	if err != nil {
-			return nil,  errors.NewApplicationError("", nil)
+			return nil,  utils.NewApplicationError("", nil)
 	}
 
 	groupsResponse := make([]dto.GroupWithMember, 0)
@@ -62,7 +62,7 @@ func (groupService *GroupService) GetGroups(user models.User) (*[]dto.GroupWithM
 	return &groupsResponse, nil
 }
 
-func (groupService *GroupService) GetGroup(user models.User, id uint) (*dto.GroupWithMember, *errors.ResponseError) {
+func (groupService *GroupService) GetGroup(user models.User, id uint) (*dto.GroupWithMember, error) {
 
 	var group models.Group
 
@@ -72,7 +72,7 @@ func (groupService *GroupService) GetGroup(user models.User, id uint) (*dto.Grou
 			}).
 			Where("user_id = ?", user.ID).Where("id = ?", id).First(&group).Error
 	if err != nil {
-		return nil, errors.NewNotFoundError("Group not found", nil)
+		return nil, utils.NewNotFoundError("Group not found", nil)
 	}
 
 
@@ -110,7 +110,7 @@ func (groupService *GroupService) GetGroup(user models.User, id uint) (*dto.Grou
 	return &groupResponse, nil
 }
 
-func (groupService *GroupService) AddGroup(user models.User, groupRequest *dto.GroupRequest) (*errors.ResponseError) {
+func (groupService *GroupService) AddGroup(user models.User, groupRequest *dto.GroupRequest) (error) {
 	group := models.Group{
 		UserID:      user.ID,
 		Name:    groupRequest.Name,
@@ -119,17 +119,17 @@ func (groupService *GroupService) AddGroup(user models.User, groupRequest *dto.G
 
 	err := db.DB.Create(&group).Error
 	if err != nil {
-		return errors.NewApplicationError("", nil)
+		return utils.NewApplicationError("", nil)
 	}
 
 	return nil
 }
 
-func (groupService *GroupService) UpdateGroup(user models.User, groupID uint, groupRequest *dto.GroupRequest) (*errors.ResponseError) {
+func (groupService *GroupService) UpdateGroup(user models.User, groupID uint, groupRequest *dto.GroupRequest) (error) {
 	var group models.Group
 	err := db.DB.Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewNotFoundError("Group not found", nil)
+		return utils.NewNotFoundError("Group not found", nil)
 	}
 
 	group.Name = groupRequest.Name
@@ -137,17 +137,17 @@ func (groupService *GroupService) UpdateGroup(user models.User, groupID uint, gr
 
 	err = db.DB.Save(&group).Error
 	if err != nil {
-		return errors.NewApplicationError("", nil)
+		return utils.NewApplicationError("", nil)
 	}
 
 	return nil
 }
 
-func (groupService *GroupService) DeleteGroup(user models.User, groupID uint) (*errors.ResponseError) {
+func (groupService *GroupService) DeleteGroup(user models.User, groupID uint) (error) {
 	var group models.Group
 	err := db.DB.Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewNotFoundError("Group not found", nil)
+		return utils.NewNotFoundError("Group not found", nil)
 	}
 
 	err = db.DB.Transaction(func(tx *gorm.DB) error {
@@ -163,23 +163,23 @@ func (groupService *GroupService) DeleteGroup(user models.User, groupID uint) (*
 	})
 
 	if err != nil {
-		return errors.NewApplicationError("Failed to delete group", nil)
+		return utils.NewApplicationError("Failed to delete group", nil)
 	}
 
 	return nil
 }
 
-func (groupService *GroupService) AddGroupMember( user models.User, groupID uint, groupMemberRequest *dto.GroupMemberRequest) (*errors.ResponseError) {
+func (groupService *GroupService) AddGroupMember( user models.User, groupID uint, groupMemberRequest *dto.GroupMemberRequest) (error) {
 	var group models.Group
 	
 	err := db.DB.Preload("Members").Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewNotFoundError("Group not found", nil)
+		return utils.NewNotFoundError("Group not found", nil)
 	}
 	
 	for _, member := range group.Members {
 		if member.ID == groupMemberRequest.ContactID {
-			return errors.NewValidationError("Group member already exists", nil)
+			return utils.NewValidationError("Group member already exists", nil)
 		}
 	}
 
@@ -187,28 +187,28 @@ func (groupService *GroupService) AddGroupMember( user models.User, groupID uint
 	
 	err = db.DB.Where("id = ? AND user_id = ?", groupMemberRequest.ContactID, user.ID).First(&contact).Error
 	if err != nil {
-		return errors.NewValidationError("Contact not found", nil)
+		return utils.NewValidationError("Contact not found", nil)
 	}
 
 	newMember := models.Contact{ID: groupMemberRequest.ContactID}
 	if err := db.DB.Model(&group).Association("Members").Append(&newMember); err != nil {
-		return  errors.NewApplicationError("Failed to add group member", nil)
+		return  utils.NewApplicationError("Failed to add group member", nil)
 	}
 
 	return nil
 }
 
-func (groupService *GroupService) DeleteGroupMember( user models.User, groupID uint, groupMemberRequest *dto.GroupMemberRequest) (*errors.ResponseError) {
+func (groupService *GroupService) DeleteGroupMember( user models.User, groupID uint, groupMemberRequest *dto.GroupMemberRequest) (error) {
 	var group models.Group
 
 	err := db.DB.Preload("Members").Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewNotFoundError("Group not found", nil)
+		return utils.NewNotFoundError("Group not found", nil)
 	}
 
 	existingMember := models.Contact{ID: groupMemberRequest.ContactID}
 	if err := db.DB.Model(&group).Association("Members").Delete(&existingMember); err != nil {
-		return  errors.NewApplicationError("Failed to delete group member", nil)
+		return  utils.NewApplicationError("Failed to delete group member", nil)
 	}
 
 	return nil
