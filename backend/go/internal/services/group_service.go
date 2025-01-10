@@ -174,7 +174,7 @@ func (groupService *GroupService) AddGroupMember( user models.User, groupID uint
 	
 	err := db.DB.Preload("Members").Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewValidationError("Group not found", nil)
+		return errors.NewNotFoundError("Group not found", nil)
 	}
 	
 	for _, member := range group.Members {
@@ -203,21 +203,8 @@ func (groupService *GroupService) DeleteGroupMember( user models.User, groupID u
 
 	err := db.DB.Preload("Members").Where("id = ? AND user_id = ?", groupID, user.ID).First(&group).Error
 	if err != nil {
-		return errors.NewValidationError("Group not found", nil)
+		return errors.NewNotFoundError("Group not found", nil)
 	}
-
-	isMemberExist := false
-	for _, member := range group.Members {
-		if member.ID == groupMemberRequest.ContactID {
-			isMemberExist = true
-			break
-		}
-	}
-
-	if !isMemberExist {
-		return errors.NewValidationError("Group member not found", nil)
-	}
-
 
 	existingMember := models.Contact{ID: groupMemberRequest.ContactID}
 	if err := db.DB.Model(&group).Association("Members").Delete(&existingMember); err != nil {

@@ -6,7 +6,7 @@ type GroupRequest struct {
 }
 
 type GroupMemberRequest struct {
-	ContactID uint `json:"contactId" validate:"required"`
+	ContactID uint `json:"contactId"`
 }
 
 type GroupWithMember struct {

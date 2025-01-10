@@ -190,7 +190,7 @@ func (groupController *GroupController) AddGroupMember(ctx *fiber.Ctx) error {
 
 	if err := validate.Struct(groupMemberRequest); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"errorMsg": "Validation Error",
+			"errorMsg": "Validation Errorr",
 			"errors":   err.Error(),
 		})
 	}

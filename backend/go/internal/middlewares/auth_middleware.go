@@ -9,7 +9,7 @@ func AuthMiddleware(ctx *fiber.Ctx) error {
 
 	if user == nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"errorMsg": "Unauthorized",
+			"errorMsg": "Not Authorized!",
 		})
 	}
 

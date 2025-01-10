@@ -158,18 +158,33 @@ func (contactService *ContactService) UpdateContact(user models.User, contactID 
 }
 
 func (contactService *ContactService) DeleteContact(user models.User, contactID uint) (*errors.ResponseError) {
+
 	var contact models.Contact
 	err := db.DB.Where("id = ? AND user_id = ?", contactID, user.ID).First(&contact).Error
 	if err != nil {
 		return errors.NewNotFoundError("Contact not found", nil)
 	}
 
-	err = db.DB.Where("contact_id = ?", contact.ID).Delete(&models.Address{}).Error
-	if err != nil {
-		return errors.NewApplicationError("Failed to delete addresses", nil)
-	}
+	err = db.DB.Transaction(func(tx *gorm.DB) error {
+		var address models.Address
+		err = tx.Where("contact_id = ?", contact.ID).Delete(&address).Error
+		if err != nil {
+			return err
+		}
 
-	err = db.DB.Delete(&contact).Error
+		err = tx.Model(&contact).Association("Groups").Clear()
+		if err != nil {
+			return err
+		}
+
+		err = tx.Delete(&contact).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return errors.NewApplicationError("Failed to delete contact", nil)
 	}

@@ -22,7 +22,7 @@ func (authService *AuthService) Register(registerRequest *dto.RegisterRequest) (
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerRequest.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, errors.NewApplicationError("", nil)
+		return nil, errors.NewApplicationError(err.Error(), nil)
 	}
 
 	user := &models.User{
@@ -34,7 +34,7 @@ func (authService *AuthService) Register(registerRequest *dto.RegisterRequest) (
 	}
 	err = db.DB.Create(&user).Error
 	if err != nil {
-		return nil,  errors.NewApplicationError("", nil)
+		return nil,  errors.NewApplicationError(err.Error(), nil)
 	}
 
 	return user, nil
@@ -44,12 +44,12 @@ func (authService *AuthService) Login(loginRequest *dto.LoginRequest) (map[strin
 	var user models.User
 	err := db.DB.Where("email = ? OR phone_number = ?", loginRequest.EmailOrPhoneNumber, loginRequest.EmailOrPhoneNumber).First(&user).Error
 	if err != nil {
-		return nil, errors.NewValidationError("Email, phone number, or password is incorrect", nil)
+		return nil, errors.NewAuthorizationError("Email, phone number, or password is incorrect", nil)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginRequest.Password))
 	if err != nil {
-		return nil, errors.NewValidationError("Email, phone number, or password is incorrect", nil)
+		return nil, errors.NewAuthorizationError("Email, phone number, or password is incorrect", nil)
 	}
 
 	session := models.Session{
