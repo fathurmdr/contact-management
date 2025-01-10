@@ -22,7 +22,7 @@ func (authService *AuthService) Register(registerRequest *dto.RegisterRequest) (
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(registerRequest.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, errors.NewApplicationError(err.Error(), nil)
+		return nil, errors.NewApplicationError("", nil)
 	}
 
 	user := &models.User{
@@ -34,7 +34,7 @@ func (authService *AuthService) Register(registerRequest *dto.RegisterRequest) (
 	}
 	err = db.DB.Create(&user).Error
 	if err != nil {
-		return nil,  errors.NewApplicationError(err.Error(), nil)
+		return nil,  errors.NewApplicationError("", nil)
 	}
 
 	return user, nil
