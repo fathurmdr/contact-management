@@ -13,10 +13,10 @@ export default class Address extends BaseModel {
   id!: number;
   contact_id!: number;
   street!: string;
-  city?: string;
-  district?: string;
-  sub_district?: string;
-  postal_code?: string;
+  city!: string | null;
+  district!: string | null;
+  sub_district!: string | null;
+  postal_code!: string | null;
   created_at!: number;
   updated_at!: number;
 

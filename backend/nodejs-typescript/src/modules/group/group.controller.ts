@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import GroupService from "./group.service";
 import { groupMemberSchema, groupSchema } from "./group.schema";
+import { ValidationError } from "@/utils/response-error.util";
 
 export default class GroupController {
   static async getGroups(req: Request, res: Response, next: NextFunction) {
@@ -15,10 +16,13 @@ export default class GroupController {
 
   static async getGroup(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await GroupService.getGroup(
-        req.user!,
-        Number(req.params.id),
-      );
+      const groupId = Number(req.params.id);
+
+      if (isNaN(groupId)) {
+        throw new ValidationError("Invalid contact ID");
+      }
+
+      const result = await GroupService.getGroup(req.user!, groupId);
 
       res.status(200).json(result);
     } catch (error) {
@@ -42,9 +46,15 @@ export default class GroupController {
     try {
       const groupDto = groupSchema.parse(req.body);
 
+      const groupId = Number(req.params.id);
+
+      if (isNaN(groupId)) {
+        throw new ValidationError("Invalid contact ID");
+      }
+
       const result = await GroupService.updateGroup(
         req.user!,
-        Number(req.params.id),
+        groupId,
         groupDto,
       );
 
@@ -56,10 +66,13 @@ export default class GroupController {
 
   static async deleteGroup(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await GroupService.deleteGroup(
-        req.user!,
-        Number(req.params.id),
-      );
+      const groupId = Number(req.params.id);
+
+      if (isNaN(groupId)) {
+        throw new ValidationError("Invalid contact ID");
+      }
+
+      const result = await GroupService.deleteGroup(req.user!, groupId);
 
       res.status(200).json(result);
     } catch (error) {
@@ -71,9 +84,15 @@ export default class GroupController {
     try {
       const groupMemberDto = groupMemberSchema.parse(req.body);
 
+      const groupId = Number(req.params.id);
+
+      if (isNaN(groupId)) {
+        throw new ValidationError("Invalid contact ID");
+      }
+
       const result = await GroupService.addGroupMember(
         req.user!,
-        Number(req.params.id),
+        groupId,
         groupMemberDto,
       );
 
@@ -91,9 +110,15 @@ export default class GroupController {
     try {
       const groupMemberDto = groupMemberSchema.parse(req.body);
 
+      const groupId = Number(req.params.id);
+
+      if (isNaN(groupId)) {
+        throw new ValidationError("Invalid contact ID");
+      }
+
       const result = await GroupService.deleteGroupMember(
         req.user!,
-        Number(req.params.id),
+        groupId,
         groupMemberDto,
       );
 

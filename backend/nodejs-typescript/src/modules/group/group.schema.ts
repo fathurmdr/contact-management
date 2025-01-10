@@ -2,7 +2,7 @@ import z from "zod";
 
 export const groupSchema = z.object({
   name: z.string(),
-  description: z.string().optional().nullable(),
+  description: z.string().nullable().default(null),
 });
 
 export type GroupDto = z.infer<typeof groupSchema>;

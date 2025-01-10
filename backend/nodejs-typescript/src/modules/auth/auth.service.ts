@@ -3,7 +3,10 @@ import { LoginDto, RegisterDto } from "./auth.schema";
 import User from "@/models/user";
 import Session from "@/models/session";
 import moment from "@/libs/moment";
-import { ValidationError } from "@/utils/response-error.util";
+import {
+  ValidationError,
+  AuthorizationError,
+} from "@/utils/response-error.util";
 
 export default class AuthService {
   static async register(registerDto: RegisterDto) {
@@ -15,7 +18,7 @@ export default class AuthService {
         .forUpdate();
 
       if (existingUser) {
-        throw new ValidationError("User already exists");
+        throw new ValidationError("Email or phone number already used");
       }
 
       const hashedPassword = await bcrypt.hash(registerDto.password, 10);
@@ -41,7 +44,9 @@ export default class AuthService {
       .first();
 
     if (!user) {
-      throw new ValidationError("User not found");
+      throw new AuthorizationError(
+        "Email, phone number, or password is incorrect",
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -50,7 +55,9 @@ export default class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new ValidationError("Invalid password");
+      throw new AuthorizationError(
+        "Email, phone number, or password is incorrect",
+      );
     }
 
     const session = await Session.query().insert({

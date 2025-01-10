@@ -1,5 +1,6 @@
 import { BaseModel } from "../libs/objection";
 import Address from "./address";
+import Group from "./group";
 import User from "./user";
 
 export default class Contact extends BaseModel {
@@ -39,6 +40,18 @@ export default class Contact extends BaseModel {
         join: {
           from: `${this.tableName}.id`,
           to: `${Address.tableName}.contact_id`,
+        },
+      },
+      groups: {
+        relation: BaseModel.ManyToManyRelation,
+        modelClass: Group,
+        join: {
+          from: `${this.tableName}.id`,
+          through: {
+            from: "group_members.contact_id",
+            to: "group_members.group_id",
+          },
+          to: `${Group.tableName}.id`,
         },
       },
     };

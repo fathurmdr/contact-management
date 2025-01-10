@@ -1,4 +1,5 @@
 import { ContactDto } from "./contact.schema";
+import { NotFoundError, ValidationError } from "@/utils/response-error.util";
 import Contact from "@/models/contact";
 
 type AddressType = {
@@ -12,6 +13,7 @@ type AddressType = {
 
 type ContactType = {
   id: number;
+  contactId: number;
   fullName: string;
   nickName: string | null;
   phoneNumber: string;
@@ -34,6 +36,7 @@ export default class ContactService {
       .modifyGraph("addresses", (builder) => {
         builder.select(
           "id",
+          "contact_id as contactId",
           "street",
           "city",
           "district",
@@ -64,6 +67,7 @@ export default class ContactService {
       .modifyGraph("addresses", (builder) => {
         builder.select(
           "id",
+          "contact_id as contactId",
           "street",
           "city",
           "district",
@@ -75,7 +79,7 @@ export default class ContactService {
       .castTo<ContactType>();
 
     if (!contact) {
-      throw new Error("Contact not found");
+      throw new NotFoundError("Contact not found");
     }
 
     return {
@@ -116,7 +120,7 @@ export default class ContactService {
       .first();
 
     if (!contact) {
-      throw new Error("Contact not found");
+      throw new NotFoundError("Contact not found");
     }
 
     await Contact.query().upsertGraph({
@@ -147,12 +151,12 @@ export default class ContactService {
       .first();
 
     if (!contact) {
-      throw new Error("Contact not found");
+      throw new NotFoundError("Contact not found");
     }
 
     await Contact.transaction(async (trx) => {
       await Contact.relatedQuery("addresses", trx).for(contact.id).delete();
-      await Contact.relatedQuery("groups", trx).for(contact.id).delete();
+      await Contact.relatedQuery("groups", trx).for(contact.id).unrelate();
       await Contact.query(trx).where("id", contact.id).delete();
     });
 

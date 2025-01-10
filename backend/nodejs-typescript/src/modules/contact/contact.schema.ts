@@ -2,17 +2,17 @@ import z from "zod";
 
 const addressSchema = z.object({
   street: z.string(),
-  city: z.string(),
-  district: z.string(),
-  subDistrict: z.string(),
-  postalCode: z.string(),
+  city: z.string().nullable().default(null),
+  district: z.string().nullable().default(null),
+  subDistrict: z.string().nullable().default(null),
+  postalCode: z.string().nullable().default(null),
 });
 
 export const contactSchema = z.object({
   fullName: z.string(),
-  nickName: z.string().optional().nullable(),
+  nickName: z.string().nullable().default(null),
   phoneNumber: z.string(),
-  email: z.string().optional().nullable(),
+  email: z.string().nullable().default(null),
   addresses: z.array(addressSchema).default([]),
 });
 

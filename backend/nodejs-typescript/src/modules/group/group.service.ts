@@ -1,6 +1,7 @@
 import { GroupDto, GroupMemberDto } from "./group.schema";
-import { ValidationError } from "@/utils/response-error.util";
+import { NotFoundError, ValidationError } from "@/utils/response-error.util";
 import Group from "@/models/group";
+import Contact from "@/models/contact";
 
 type AddressType = {
   id: number;
@@ -89,7 +90,7 @@ export default class GroupService {
       .castTo<GroupType>();
 
     if (!group) {
-      throw new ValidationError("Group not found");
+      throw new NotFoundError("Group not found");
     }
 
     return {
@@ -121,7 +122,7 @@ export default class GroupService {
       .first();
 
     if (!group) {
-      throw new ValidationError("Group not found");
+      throw new NotFoundError("Group not found");
     }
 
     await Group.query().patchAndFetchById(groupId, {
@@ -142,7 +143,7 @@ export default class GroupService {
       .first();
 
     if (!group) {
-      throw new ValidationError("Group not found");
+      throw new NotFoundError("Group not found");
     }
 
     await Group.transaction(async (trx) => {
@@ -154,6 +155,7 @@ export default class GroupService {
       message: "Group deleted successfully",
     };
   }
+
   static async addGroupMember(
     user: Express.User,
     groupId: number,
@@ -169,13 +171,22 @@ export default class GroupService {
       .first();
 
     if (!group) {
-      throw new ValidationError("Group member not found");
+      throw new NotFoundError("Group not found");
     }
 
     if (
       group.members!.some((member) => member.id === groupMemberDto.contactId)
     ) {
       throw new ValidationError("Group member already exists");
+    }
+
+    const contact = await Contact.query()
+      .where("user_id", user.id)
+      .andWhere("id", groupMemberDto.contactId)
+      .first();
+
+    if (!contact) {
+      throw new ValidationError("Contact not found");
     }
 
     await Group.relatedQuery("members")
@@ -198,7 +209,7 @@ export default class GroupService {
       .first();
 
     if (!group) {
-      throw new ValidationError("Group member not found");
+      throw new NotFoundError("Group not found");
     }
 
     await Group.relatedQuery("members")
