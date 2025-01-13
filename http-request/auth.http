@@ -1,9 +1,9 @@
-@baseUrl=http://localhost:3000
+@baseUrl=http://localhost:5000
 
 ### register
 POST {{baseUrl}}/auth/register
-Content-Type: "application/json"
-Accept: "application/json"
+Content-Type: application/json
+Accept: application/json
 
 {
   "name": "Jhon Doe",
@@ -15,8 +15,8 @@ Accept: "application/json"
 
 ### login
 POST {{baseUrl}}/auth/login
-Content-Type: "application/json"
-Accept: "application/json"
+Content-Type: application/json
+Accept: application/json
 
 {
   "emailOrPhoneNumber": "+62-81234566789",
