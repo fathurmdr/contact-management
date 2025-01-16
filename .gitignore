@@ -3,3 +3,5 @@
 **/dist
 **/temp
 **/*.exe
+**/__pycache__
+**/.venv
