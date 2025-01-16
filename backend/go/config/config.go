@@ -24,7 +24,7 @@ func LoadConfig() Config {
 
 	return Config{
 		Host:       getEnv("HOST", "127.0.0.1"),
-		Port:       getEnv("PORT", "3001"),
+		Port:       getEnv("PORT", "3000"),
 		DBHost:     getEnv("DATABASE_HOST", "localhost"),
 		DBPort:     getEnv("DATABASE_PORT", "5432"),
 		DBName:     getEnv("DATABASE_NAME", "contact_management"),
