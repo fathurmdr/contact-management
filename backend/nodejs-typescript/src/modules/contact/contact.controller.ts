@@ -8,7 +8,10 @@ export default class ContactController {
     try {
       const result = await ContactService.getContacts(req.user!);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Contacts fetched successfully",
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
@@ -24,7 +27,10 @@ export default class ContactController {
 
       const result = await ContactService.getContact(req.user!, contactId);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Contact fetched successfully",
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
@@ -34,9 +40,11 @@ export default class ContactController {
     try {
       const contactDto = contactSchema.parse(req.body);
 
-      const result = await ContactService.addContact(req.user!, contactDto);
+      await ContactService.addContact(req.user!, contactDto);
 
-      res.status(201).json(result);
+      res.status(201).json({
+        message: "Contact added successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -52,13 +60,11 @@ export default class ContactController {
         throw new ValidationError("Invalid contact ID");
       }
 
-      const result = await ContactService.updateContact(
-        req.user!,
-        contactId,
-        contactDto,
-      );
+      await ContactService.updateContact(req.user!, contactId, contactDto);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Contact updated successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -72,9 +78,11 @@ export default class ContactController {
         throw new ValidationError("Invalid contact ID");
       }
 
-      const result = await ContactService.deleteContact(req.user!, contactId);
+      await ContactService.deleteContact(req.user!, contactId);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Contact deleted successfully",
+      });
     } catch (error) {
       next(error);
     }

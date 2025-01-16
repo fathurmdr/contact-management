@@ -46,10 +46,7 @@ export default class ContactService {
       })
       .castTo<ContactType[]>();
 
-    return {
-      message: "Contacts fetched successfully",
-      data: contacts,
-    };
+    return contacts;
   }
 
   static async getContact(user: Express.User, contactId: number) {
@@ -82,10 +79,7 @@ export default class ContactService {
       throw new NotFoundError("Contact not found");
     }
 
-    return {
-      message: "Contact fetched successfully",
-      data: contact,
-    };
+    return contact;
   }
 
   static async addContact(user: Express.User, contactDto: ContactDto) {
@@ -103,10 +97,6 @@ export default class ContactService {
         postal_code: address.postalCode,
       })),
     });
-
-    return {
-      message: "Contact added successfully",
-    };
   }
 
   static async updateContact(
@@ -138,10 +128,6 @@ export default class ContactService {
         postal_code: address.postalCode,
       })),
     });
-
-    return {
-      message: "Contact updated successfully",
-    };
   }
 
   static async deleteContact(user: Express.User, contactId: number) {
@@ -159,9 +145,5 @@ export default class ContactService {
       await Contact.relatedQuery("groups", trx).for(contact.id).unrelate();
       await Contact.query(trx).where("id", contact.id).delete();
     });
-
-    return {
-      message: "Contact deleted successfully",
-    };
   }
 }

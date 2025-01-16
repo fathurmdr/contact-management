@@ -31,10 +31,6 @@ export default class AuthService {
         bio: registerDto.bio,
       });
     });
-
-    return {
-      message: "User registered successfully",
-    };
   }
 
   static async login(loginDto: LoginDto) {
@@ -66,11 +62,8 @@ export default class AuthService {
     });
 
     return {
-      message: "User logged in successfully",
-      data: {
-        sessionId: session.id,
-        expiresAt: session.expires_at,
-      },
+      sessionId: session.id,
+      expiresAt: session.expires_at,
     };
   }
 }

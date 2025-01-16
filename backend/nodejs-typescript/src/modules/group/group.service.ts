@@ -55,10 +55,7 @@ export default class GroupService {
       })
       .castTo<GroupType[]>();
 
-    return {
-      message: "Groups fetched successfully",
-      data: groups,
-    };
+    return groups;
   }
 
   static async getGroup(user: Express.User, groupId: number) {
@@ -93,10 +90,7 @@ export default class GroupService {
       throw new NotFoundError("Group not found");
     }
 
-    return {
-      message: "Group fetched successfully",
-      data: group,
-    };
+    return group;
   }
 
   static async addGroup(user: Express.User, groupDto: GroupDto) {
@@ -105,10 +99,6 @@ export default class GroupService {
       name: groupDto.name,
       description: groupDto.description,
     });
-
-    return {
-      message: "Group added successfully",
-    };
   }
 
   static async updateGroup(
@@ -130,10 +120,6 @@ export default class GroupService {
       name: groupDto.name,
       description: groupDto.description,
     });
-
-    return {
-      message: "Group updated successfully",
-    };
   }
 
   static async deleteGroup(user: Express.User, groupId: number) {
@@ -150,10 +136,6 @@ export default class GroupService {
       await Group.relatedQuery("members", trx).for(group.id).unrelate();
       await Group.query(trx).where("id", group.id).delete();
     });
-
-    return {
-      message: "Group deleted successfully",
-    };
   }
 
   static async addGroupMember(
@@ -192,10 +174,6 @@ export default class GroupService {
     await Group.relatedQuery("members")
       .for(group.id)
       .relate(groupMemberDto.contactId);
-
-    return {
-      message: "Group member added successfully",
-    };
   }
 
   static async deleteGroupMember(
@@ -216,9 +194,5 @@ export default class GroupService {
       .for(group.id)
       .unrelate()
       .where("contact_id", groupMemberDto.contactId);
-
-    return {
-      message: "Group member deleted successfully",
-    };
   }
 }

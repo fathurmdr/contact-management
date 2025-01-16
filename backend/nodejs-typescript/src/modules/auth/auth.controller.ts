@@ -7,9 +7,11 @@ export default class AuthController {
     try {
       const registerDto = registerSchema.parse(req.body);
 
-      const result = await AuthService.register(registerDto);
+      await AuthService.register(registerDto);
 
-      res.status(201).json(result);
+      res.status(201).json({
+        message: "User registered successfully",
+      });
     } catch (error) {
       next(error);
     }
@@ -21,7 +23,10 @@ export default class AuthController {
 
       const result = await AuthService.login(loginDto);
 
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "User logged in successfully",
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
