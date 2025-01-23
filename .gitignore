@@ -5,3 +5,8 @@
 **/*.exe
 **/__pycache__
 **/.venv
+**/.next
+**/coverage
+**/build
+**/.vercel
+**/next-env.d.ts
