@@ -7,7 +7,7 @@ export default async function AuthTemplate({
   const auth = await getAuth();
 
   if (auth) {
-    return redirect("/contacts");
+    redirect("/contacts");
   }
   return children;
 }

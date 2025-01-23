@@ -8,7 +8,7 @@ export default async function Home() {
   const auth = await getAuth();
 
   if (auth) {
-    return redirect("/contacts");
+    redirect("/contacts");
   }
 
   return (
