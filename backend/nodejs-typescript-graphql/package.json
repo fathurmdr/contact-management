@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "dev": "tsx watch ./src/index.ts",
-    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json && yarn copy-assets",
+    "copy-assets": "copyfiles -u 1 \"src/**/*\" dist/ --exclude=src/**/*.ts --exclude=src/**/*.js",
     "playground": "tsx ./src/playground",
     "test": "jest",
     "test-coverage": "jest --coverage",
@@ -46,6 +47,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-import-resolver-typescript": "^3.7.0",

@@ -7,7 +7,7 @@ const typesArray = loadFilesSync(path.join(__dirname, "./modules"), {
 });
 
 const resolversArray = loadFilesSync(path.join(__dirname, "./modules"), {
-  extensions: ["resolver.ts"],
+  extensions: ["resolver.ts", "resolver.js"],
   ignoreIndex: true,
 });
 

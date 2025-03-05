@@ -6,7 +6,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import config from "./config";
 import logger from "./libs/logger";
-import { typeDefs, resolvers } from "./graphql";
+import { typeDefs, resolvers } from "./graphql-config";
 import app from "./app";
 import errorMiddleware from "./middlewares/error.middleware";
 
