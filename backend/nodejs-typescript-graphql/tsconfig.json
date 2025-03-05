@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    // Enable latest features
+    "lib": ["ES2022"],
+    "target": "ES2022",
+    "module": "NodeNext",
+
+    // Bundler mode
+    "moduleResolution": "nodenext",
+
+    // Best practices
+    "strict": true,
+
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Path
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@test/*": ["./test/*"]
+    }
+  },
+  "include": ["src", "test"]
+}

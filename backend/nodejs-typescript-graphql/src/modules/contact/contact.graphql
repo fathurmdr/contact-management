@@ -1,0 +1,52 @@
+type Address {
+  id: ID!
+  street: String!
+  city: String!
+  district: String!
+  subDistrict: String!
+  postalCode: String!
+}
+
+input AddressInput {
+  street: String!
+  city: String!
+  district: String!
+  subDistrict: String!
+  postalCode: String!
+}
+
+type Contact {
+  id: ID!
+  contactId: ID!
+  fullName: String!
+  nickName: String
+  phoneNumber: String!
+  email: String
+  addresses: [Address]
+}
+
+type Query {
+  contacts: [Contact]
+  contact(id: ID!): Contact
+}
+
+type Mutation {
+  addContact(
+    fullName: String!
+    nickName: String
+    phoneNumber: String!
+    email: String
+    addresses: [AddressInput]
+  ): String!
+
+  updateContact(
+    id: ID!
+    fullName: String!
+    nickName: String
+    phoneNumber: String!
+    email: String
+    addresses: [AddressInput]
+  ): String!
+
+  deleteContact(id: ID!): String!
+}

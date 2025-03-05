@@ -1,0 +1,16 @@
+type LoginData {
+  sessionId: String!
+  expiresAt: String!
+}
+
+type Mutation {
+  register(
+    name: String!
+    email: String!
+    phoneNumber: String!
+    bio: String
+    password: String!
+  ): String
+
+  login(emailOrPhoneNumber: String!, password: String!): LoginData
+}
