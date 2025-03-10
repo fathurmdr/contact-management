@@ -28,6 +28,10 @@ func main() {
 
 	app.Use(middlewares.SessionMiddleware)
 
+	app.Get("/ping", func (c *fiber.Ctx) error {
+			return c.SendString("Pong!")
+	})
+
 	routes.SetupRoutes(app)
 
 

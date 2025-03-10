@@ -19,6 +19,10 @@ app.use(formidableMiddleware());
 
 app.use(sessionMiddleware);
 
+app.get("/ping", (_, res) => {
+  res.send("Pong!");
+});
+
 app.use("/", mainRouter);
 
 app.use(errorMiddleware);

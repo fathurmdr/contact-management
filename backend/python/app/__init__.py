@@ -15,6 +15,10 @@ def create_app():
     error_middleware(app)
     session_middleware(app)
 
+    @app.get("/ping")
+    def ping():
+        return "Pong!", 200
+
     app.register_blueprint(auth_routes)
     app.register_blueprint(contact_routes)
     app.register_blueprint(group_routes)
