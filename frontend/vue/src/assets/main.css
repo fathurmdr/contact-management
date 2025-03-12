@@ -1,0 +1,35 @@
+@import 'tailwindcss';
+@import './base.css';
+
+#app {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  height: 100dvh;
+  max-width: 768px;
+  overflow: hidden;
+  padding-bottom: 56px;
+}
+
+@media (min-width: 640px) {
+  #app {
+    padding-top: 1.5rem /* 24px */;
+    padding-bottom: 1.5rem; /* 24px */
+  }
+}
+
+/* a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+} */
