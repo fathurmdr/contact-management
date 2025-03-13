@@ -1,0 +1,9 @@
+type DialCode {
+  name: String!
+  dial_code: String!
+  code: String!
+}
+
+type Query {
+  dialCodes: [DialCode]
+}

@@ -11,13 +11,25 @@ export default function loggerMiddleware(
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (req.originalUrl === "/graphql") {
-      logger.info({
-        type: "graphql",
-        ip: req.ip,
-        method: req.method,
-        status: res.statusCode,
-        duration: duration,
-      });
+      if (req.error) {
+        logger.error({
+          type: "graphql",
+          ip: req.ip,
+          method: req.method,
+          status: res.statusCode,
+          message: req.error.message,
+          stack: req.error.stack,
+          duration: duration,
+        });
+      } else {
+        logger.info({
+          type: "graphql",
+          ip: req.ip,
+          method: req.method,
+          status: res.statusCode,
+          duration: duration,
+        });
+      }
     } else {
       if (req.error) {
         logger.error({

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import z from "zod";
 import Session from "@/models/session";
 import moment from "@/libs/moment";
 import { ResponseError } from "@/utils/response-error.util";
@@ -9,9 +10,12 @@ export default async function sessionMiddleware(
   next: NextFunction,
 ) {
   try {
-    const sessionId = req.headers["x-session-id"];
+    const sessionId = z
+      .string()
+      .uuid()
+      .safeParse(req.headers["x-session-id"]).data;
 
-    if (typeof sessionId !== "string") {
+    if (!sessionId) {
       next();
       return;
     }

@@ -1,3 +1,14 @@
+type User {
+  name: String!
+  email: String!
+  phoneNumber: String!
+  bio: String
+}
+
+type Query {
+  me: User
+}
+
 type LoginData {
   sessionId: String!
   expiresAt: String!

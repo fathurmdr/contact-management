@@ -1,8 +1,24 @@
 import AuthService from "./auth.service";
 import { loginSchema, registerSchema } from "./auth.schema";
-import { handleGraphQLError } from "@/utils/handle-error.util";
+import {
+  AuthorizationError,
+  handleGraphQLError,
+} from "@/utils/handle-error.util";
 
 const authResolvers = {
+  Query: {
+    me: async (_: any, __: any, context: GraphQLContext) => {
+      try {
+        if (!context.user) {
+          throw new AuthorizationError();
+        }
+
+        return context.user;
+      } catch (error) {
+        handleGraphQLError(error);
+      }
+    },
+  },
   Mutation: {
     register: async (_: any, args: any) => {
       try {
