@@ -3,21 +3,9 @@ import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { Form, Input, Button, message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
-import gql from 'graphql-tag'
+import { REGISTER_MUTATION } from '@/mutations/auth'
 
 const router = useRouter()
-
-const REGISTER_MUTATION = gql`
-  mutation Register(
-    $name: String!
-    $email: String!
-    $phoneNumber: String!
-    $bio: String
-    $password: String!
-  ) {
-    register(name: $name, email: $email, phoneNumber: $phoneNumber, bio: $bio, password: $password)
-  }
-`
 
 interface FormState {
   name: string

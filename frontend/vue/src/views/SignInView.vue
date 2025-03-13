@@ -2,21 +2,12 @@
 import { reactive } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { Form, Input, Button, message } from 'ant-design-vue'
-import gql from 'graphql-tag'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { LOGIN_MUTATION } from '@/mutations/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
-
-const LOGIN_MUTATION = gql`
-  mutation login($emailOrPhoneNumber: String!, $password: String!) {
-    login(emailOrPhoneNumber: $emailOrPhoneNumber, password: $password) {
-      sessionId
-      expiresAt
-    }
-  }
-`
 
 interface FormState {
   emailOrPhoneNumber: string

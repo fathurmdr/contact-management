@@ -1,5 +1,5 @@
 import apolloClient from '@/libs/apolloClient'
-import { GET_ME_QUERY } from '@/queries/me'
+import { GET_ME_QUERY } from '@/queries/auth'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'

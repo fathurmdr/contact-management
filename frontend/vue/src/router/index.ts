@@ -34,6 +34,16 @@ const router = createRouter({
           component: () => import('../views/ContactsView.vue'),
         },
         {
+          path: 'contacts/add',
+          name: 'addContact',
+          component: () => import('../views/AddContactView.vue'),
+        },
+        {
+          path: 'contacts/:id/edit',
+          name: 'updateContact',
+          component: () => import('../views/UpdateContactView.vue'),
+        },
+        {
           path: 'groups',
           name: 'groups',
           component: () => import('../views/GroupsView.vue'),
