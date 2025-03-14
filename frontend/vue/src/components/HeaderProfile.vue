@@ -2,11 +2,8 @@
 import { DownOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import { Dropdown, Menu } from 'ant-design-vue'
 import { useAuthStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
 
 const authStore = useAuthStore()
-const { user } = storeToRefs(authStore)
-const { logout } = authStore
 </script>
 
 <template>
@@ -14,7 +11,7 @@ const { logout } = authStore
     <Dropdown placement="bottomRight">
       <template #overlay>
         <Menu>
-          <Menu.Item key="1" @click="logout">
+          <Menu.Item key="1" @click="authStore.logout">
             <LogoutOutlined class="mr-2 text-base" />
             Sign Out
           </Menu.Item>
@@ -23,8 +20,8 @@ const { logout } = authStore
 
       <div class="flex cursor-pointer items-center gap-4">
         <div class="flex flex-col">
-          <p>{{ user?.name }}</p>
-          <p class="text-xs text-gray-500">{{ user?.bio }}</p>
+          <p>{{ authStore.user?.name }}</p>
+          <p class="text-xs text-gray-500">{{ authStore.user?.bio }}</p>
         </div>
         <DownOutlined />
       </div>
