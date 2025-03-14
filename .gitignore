@@ -11,3 +11,4 @@
 **/.vercel
 **/next-env.d.ts
 .qodo
+frontend/vue/components.d.ts

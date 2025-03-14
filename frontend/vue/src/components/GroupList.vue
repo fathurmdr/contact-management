@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { defineProps, computed } from 'vue'
-import { Collapse, List, Button, Space, Modal } from 'ant-design-vue'
+import { defineProps, defineEmits, computed } from 'vue'
+import { Collapse, List, Button, Space, Modal, notification } from 'ant-design-vue'
+import { useMutation } from '@vue/apollo-composable'
+import { DELETE_GROUP_MEMBER_MUTATION } from '@/mutations/group'
 
 interface ContactType {
   id: string
@@ -22,24 +24,65 @@ interface GroupListProps {
 
 const props = defineProps<GroupListProps>()
 
+const emits = defineEmits(['memberRemoved'])
+
 const groupIds = computed(() => props.groups.map((group) => group.id))
 
-const handleRemoveMember = (contactId: string, groupId: string) => {
+const { mutate: removeMember, loading: removeMemberLoading } = useMutation(
+  DELETE_GROUP_MEMBER_MUTATION,
+)
+
+const onRemoveMember = (contactId: string, groupId: string) => {
   Modal.confirm({
     title: 'Remove this Contact?',
     content: `Are you sure you want to remove this contact from the group?`,
     onOk: async () => {
-      console.log(`Removing contact ${contactId} from group ${groupId}`)
+      try {
+        const result = await removeMember({
+          id: groupId,
+          contactId: contactId,
+        })
+        if (result?.errors) {
+          throw result
+        }
+        notification.success({
+          message: 'Success',
+          description: 'Contact removed successfully',
+        })
+        emits('memberRemoved')
+      } catch (error: any) {
+        if (error.errors) {
+          notification.error({
+            message: 'Error',
+            description: error.errors.errorMsg,
+          })
+        } else {
+          notification.error({
+            message: 'Error',
+            description: error.message || 'Remove Contact failed, please try again.',
+          })
+        }
+      }
     },
     okText: 'Remove',
     okButtonProps: { danger: true },
+    centered: true,
   })
 }
 </script>
 
 <template>
+  <div v-if="removeMemberLoading" class="flex justify-center items-center h-40">
+    <Spin size="large" />
+  </div>
   <Collapse :default-active-key="groupIds">
-    <Collapse.Panel v-for="group in groups" :key="group.id" :header="group.name">
+    <Collapse.Panel v-for="group in groups" :key="group.id">
+      <template #header>
+        <div>
+          <p>{{ group.name }}</p>
+          <p class="text-xs font-normal">{{ group.description }}</p>
+        </div>
+      </template>
       <template #extra>
         <Space>
           <RouterLink :to="`/groups/${group.id}/add-member`" class="!px-0 !text-xs"
@@ -65,7 +108,7 @@ const handleRemoveMember = (contactId: string, groupId: string) => {
                 type="link"
                 danger
                 class="!px-2 !text-xs"
-                @click="handleRemoveMember(contact.id, group.id)"
+                @click="onRemoveMember(contact.id, group.id)"
               >
                 Remove
               </Button>
@@ -79,6 +122,9 @@ const handleRemoveMember = (contactId: string, groupId: string) => {
 
 <style scoped>
 :deep(.ant-collapse-content-box) {
-  padding: 0px 8px !important; /* Sesuaikan padding sesuai kebutuhan */
+  padding: 0px 8px !important;
+}
+:deep(.ant-collapse-header) {
+  align-items: center !important;
 }
 </style>

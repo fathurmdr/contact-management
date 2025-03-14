@@ -89,7 +89,7 @@ const onFinish = async (values: any) => {
     } else {
       notification.error({
         message: 'Error',
-        description: error.message || 'Add Contact failed, please try again.',
+        description: error.message || 'Save Contact failed, please try again.',
       })
     }
   }

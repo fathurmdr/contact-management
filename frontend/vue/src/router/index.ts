@@ -48,6 +48,21 @@ const router = createRouter({
           name: 'groups',
           component: () => import('../views/GroupsView.vue'),
         },
+        {
+          path: 'groups/add',
+          name: 'addGroup',
+          component: () => import('../views/AddGroupView.vue'),
+        },
+        {
+          path: 'groups/:id/edit',
+          name: 'updateGroup',
+          component: () => import('../views/UpdateGroupView.vue'),
+        },
+        {
+          path: 'groups/:id/add-member',
+          name: 'addGroupMember',
+          component: () => import('../views/AddGroupMemberView.vue'),
+        },
       ],
     },
   ],

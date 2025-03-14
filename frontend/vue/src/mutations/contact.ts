@@ -39,7 +39,7 @@ export const UPDATE_CONTACT_MUTATION = gql`
 `
 
 export const DELETE_CONTACT_MUTATION = gql`
-  mutation DeleteContact($contactId: ID!) {
-    deleteContact(id: $contactId)
+  mutation DeleteContact($id: ID!) {
+    deleteContact(id: $id)
   }
 `

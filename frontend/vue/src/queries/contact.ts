@@ -21,8 +21,8 @@ export const GET_CONTACTS_QUERY = gql`
 `
 
 export const GET_CONTACT_QUERY = gql`
-  query Contact($contactId: ID!) {
-    contact(id: $contactId) {
+  query Contact($id: ID!) {
+    contact(id: $id) {
       id
       fullName
       nickName
