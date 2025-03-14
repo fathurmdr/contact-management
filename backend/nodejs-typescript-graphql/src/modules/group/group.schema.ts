@@ -1,14 +1,15 @@
 import z from "zod";
+import { isNumber, isString } from "@/utils/validation.util";
 
 export const groupSchema = z.object({
-  name: z.string(),
-  description: z.string().nullable().default(null),
+  name: isString(),
+  description: isString().nullable().default(null),
 });
 
 export type GroupDto = z.infer<typeof groupSchema>;
 
 export const groupMemberSchema = z.object({
-  contactId: z.number(),
+  contactId: isNumber(),
 });
 
 export type GroupMemberDto = z.infer<typeof groupMemberSchema>;
