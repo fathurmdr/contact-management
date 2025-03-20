@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	--color-primary: #1759e9;
+	--color-link: #1677ff;
+}
+
+:root {
+	--font-geist-sans: 'Geist', sans-serif;
+	--font-geist-mono: 'Geist Mono', monospace;
+}
+
+body {
+	display: flex;
+	justify-content: center;
+}
