@@ -1,0 +1,93 @@
+@startuml Contact Management System ERD
+
+!define ENTITY(name) entity name {
+!define ENDENTITY }
+
+skinparam backgroundColor #FFFFFF
+skinparam entity {
+    BackgroundColor #E1F5FE
+    BorderColor #0277BD
+    FontName Arial
+    FontSize 11
+}
+
+ENTITY(users)
+    * id : INT <<PK>>
+    --
+    * name : VARCHAR(255)
+    * email : VARCHAR(255)
+    * phone_number : VARCHAR(20)
+    * password : VARCHAR(255)
+    bio : TEXT
+    * created_at : BIGINT
+    * updated_at : BIGINT
+ENDENTITY
+
+ENTITY(sessions)
+    * id : VARCHAR(255) <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * expires_at : BIGINT
+    * created_at : BIGINT
+    * updated_at : BIGINT
+ENDENTITY
+
+ENTITY(contacts)
+    * id : INT <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * full_name : VARCHAR(255)
+    nick_name : VARCHAR(255)
+    * phone_number : VARCHAR(20)
+    email : VARCHAR(255)
+    * created_at : BIGINT
+    * updated_at : BIGINT
+ENDENTITY
+
+ENTITY(addresses)
+    * id : INT <<PK>>
+    --
+    * contact_id : INT <<FK>>
+    * street : VARCHAR(255)
+    city : VARCHAR(100)
+    district : VARCHAR(100)
+    sub_district : VARCHAR(100)
+    postal_code : VARCHAR(10)
+    * created_at : BIGINT
+    * updated_at : BIGINT
+ENDENTITY
+
+ENTITY(groups)
+    * id : INT <<PK>>
+    --
+    * user_id : INT <<FK>>
+    * name : VARCHAR(255)
+    description : TEXT
+    * created_at : BIGINT
+    * updated_at : BIGINT
+ENDENTITY
+
+ENTITY(group_members)
+    * group_id : INT <<FK>>
+    * contact_id : INT <<FK>>
+    --
+    <<Composite PK>>
+ENDENTITY
+
+' Relationships
+users ||--o{ sessions : "has many"
+users ||--o{ contacts : "has many"
+users ||--o{ groups : "has many"
+contacts ||--o{ addresses : "has many"
+groups ||--o{ group_members : "belongs to"
+contacts ||--o{ group_members : "belongs to"
+
+' Notes
+note right of users : Main user entity\nStores authentication info
+note right of sessions : Session management\nfor user authentication
+note right of contacts : User's contact list\nwith personal details
+note right of addresses : Multiple addresses\nper contact
+note right of groups : Contact groups\ncreated by users
+note right of group_members : Junction table for\nmany-to-many relationship
+
+@enduml
